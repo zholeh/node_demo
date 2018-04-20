@@ -19,13 +19,17 @@
             <label for="age">Возраст:</label>
             <input class="form-control" name="age" />
         </div>
+        <div class="form-group">
+            <label for="password">Пароль:</label>
+            <input class="form-control" name="password" />
+        </div>
         <div class="panel-body">
             <button type="submit" class="btn btn-sm btn-primary">Сохранить</button>
             <a id="reset" class="btn btn-sm btn-primary">Сбросить</a>
         </div>
     </form>
     <table class="table table-condensed table-striped table-bordered">
-        <thead><tr><th>Id</th><th>Имя</th><th>возраст</th><th></th></tr></thead>
+        <thead><tr><th>Id</th><th>Имя</th><th>возраст</th></th><th>Пароль</th><th></th></tr></thead>
         <tbody>
         </tbody>
     </table>
@@ -57,19 +61,21 @@
                     var form = document.forms["userForm"];
                     form.elements["id"].value = user.id;
                     form.elements["name"].value = user.name;
+                    form.elements["password"].value = (user.password == undefined ? '' : user.password);
                     form.elements["age"].value = user.age;
                 }
             });
         }
         // Добавление пользователя
-        function CreateUser(userName, userAge) {
+        function CreateUser(userName, userAge, userpassword) {
             $.ajax({
                 url: "http://localhost:3000/api/users",
                 contentType: "application/json",
                 method: "POST",
                 data: JSON.stringify({
                     name: userName,
-                    age: userAge
+                    age: userAge,
+                    password: userpassword
                 }),
                 success: function (user) {
                     reset();
@@ -78,7 +84,7 @@
             })
         }
         // Изменение пользователя
-        function EditUser(userId, userName, userAge) {
+        function EditUser(userId, userName, userAge, userpassword) {
             $.ajax({
                 url: "http://localhost:3000/api/users",
                 contentType: "application/json",
@@ -86,6 +92,7 @@
                 data: JSON.stringify({
                     id: userId,
                     name: userName,
+                    password: userpassword,
                     age: userAge
                 }),
                 success: function (user) {
@@ -118,6 +125,7 @@
         var row = function (user) {
             return "<tr data-rowid='" + user.id + "'><td>" + user.id + "</td>" +
                    "<td>" + user.name + "</td> <td>" + user.age + "</td>" +
+                   "<td>" + (user.password == undefined ? '' : user.password) +
                    "<td><a class='editLink' data-id='" + user.id + "'>Изменить</a> | " +
                     "<a class='removeLink' data-id='" + user.id + "'>Удалить</a></td></tr>";
         }
@@ -134,10 +142,11 @@
             var id = this.elements["id"].value;
             var name = this.elements["name"].value;
             var age = this.elements["age"].value;
+            var password = this.elements["password"].value;
             if (id == 0)
-                CreateUser(name, age);
+                CreateUser(name, age, password);
             else
-                EditUser(id, name, age);
+                EditUser(id, name, age, password);
         });
   
         // нажимаем на ссылку Изменить

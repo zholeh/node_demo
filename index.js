@@ -21,7 +21,7 @@ app.get("/api/users", function(req, res){
       
     var content = fs.readFileSync("users.json", "utf8");
     var users = JSON.parse(content);
-    console.log(req);
+    //console.log(req);
     res.send(users);
 });
 
@@ -55,7 +55,8 @@ app.post("/api/users", jsonParser, function (req, res) {
      
     var userName = req.body.name;
     var userAge = req.body.age;
-    var user = {name: userName, age: userAge};
+    var userpassword = req.body.password;
+    var user = {name: userName, age: userAge, password: userpassword};
      
     var data = fs.readFileSync("users.json", "utf8");
     var users = JSON.parse(data);
@@ -101,12 +102,16 @@ app.delete("/api/users/:id", function(req, res){
 
 // изменение пользователя
 app.put("/api/users", jsonParser, function(req, res){
-      
+    
+    console.log(req.body);
+    console.log(req.body.id, typeof(req.body.id));
+    console.log(req.body.name);
     if(!req.body) return res.sendStatus(400);
-     
+    
     var userId = req.body.id;
     var userName = req.body.name;
     var userAge = req.body.age;
+    var userpassword = req.body.password;
      
     var data = fs.readFileSync("users.json", "utf8");
     var users = JSON.parse(data);
@@ -121,6 +126,7 @@ app.put("/api/users", jsonParser, function(req, res){
     if(user){
         user.age = userAge;
         user.name = userName;
+        user.password = userpassword;
         var data = JSON.stringify(users);
         fs.writeFileSync("users.json", data);
         res.send(user);
