@@ -22,33 +22,8 @@ app.get("/api/users", function (req, res) {
     var users = JSON.parse(content);
     res.send(users);
 });
-
-app.get("/api/checkuser/:user", function (req, res) {
-
-    let user = JSON.parse(req.params.user);
-    console.log(req.params.user);
-
-    let userId = '';
-    let content = fs.readFileSync("users.json", "utf8");
-    let users = JSON.parse(content);
-    
-    for (var i = 0; i < users.length; i++) {
-        console.log(users[i].name);
-        if (users[i].name == user.name && 
-            users[i].password == user.password ) {
-            userId = '' + users[i].id;
-            console.log(userId);
-            break;
-        }
-    }
-    console.log(userId);
-    res.send(userId);
-});
-
 app.get("/api/users/:id", function (req, res) {
 
-    console.log('!', req.params);
-    console.log('!', req.body);
     var id = req.params.id; // получаем id
     var content = fs.readFileSync("users.json", "utf8");
     var users = JSON.parse(content);
@@ -65,6 +40,23 @@ app.get("/api/users/:id", function (req, res) {
     else {
         res.status(404).send();
     }
+});
+app.get("/api/checkuser/:user", function (req, res) {
+
+    let user = JSON.parse(req.params.user);
+
+    let userId = '';
+    let content = fs.readFileSync("users.json", "utf8");
+    let users = JSON.parse(content);
+    
+    for (var i = 0; i < users.length; i++) {
+        if (users[i].name == user.name && 
+            users[i].password == user.password ) {
+            userId = '' + users[i].id;
+            break;
+        }
+    }
+    res.send(userId);
 });
 
 app.post("/api/users", jsonParser, function (req, res) {
